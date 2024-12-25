@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康调查结果</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("https://img.zcool.cn/community/0150d55ca30a1ba801214168d3ceb9.jpg?x-oss-process=image/auto-orient,1/resize,m_lfit,w_1280,limit_1/sharpen,100");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position:center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color:rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7f7ff;
+            border-left: 4px solid #008CBA;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>健康调查结果</h1>
+    <div class="result" id="result">
+        回答:{{ .Result }}
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = resultDiv.innerHTML.replace(/\\n/g, "<br>");
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康调查表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("https://img.zcool.cn/community/0150d55ca30a1ba801214168d3ceb9.jpg?x-oss-process=image/auto-orient,1/resize,m_lfit,w_1280,limit_1/sharpen,100");
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color:rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #008CBA;
+        }
+    </style>
+    <script>
+        async function submitForm(event) {
+            event.preventDefault();  // 阻止表单的默认提交行为
+
+            // 获取表单数据
+            const formData = new FormData(document.querySelector('form'));
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // 将表单数据映射到API期望的字段
+            const payload = {
+                Gender: data.gender === "male" ? 0 : 1,
+                EduLevel: data.college === "yes" ? 1 : 0,
+                Smoking: data.smoke === "yes" ? 1 : 0,
+                Alcohol: data.drink === "yes" ? 1 : 0,
+                SleepQuality: data.insomnia === "yes" ? 1 : 0,
+                FamHistAlz: data.alzheimers === "yes" ? 1 : 0,
+                CVD: data.heart_disease === "yes" ? 1 : 0,
+                Diabetes: data.diabetes === "yes" ? 1 : 0,
+                Depression: data.depression_history === "yes" ? 1 : 0,
+                HeadInjury: data.head_injury === "yes" ? 1 : 0,
+                BehavioralIssues: data.behavior_problems === "yes" ? 1 : 0,
+                Confusion: data.confusion === "yes" ? 1 : 0,
+                Disorientation: data.disorientation === "yes" ? 1 : 0,
+                PersonalityChanges: data.personality_change === "yes" ? 1 : 0,
+                TaskDifficulty: data.task_completion === "yes" ? 1 : 0
+            };
+
+            // 发送POST请求到Gin API
+            try {
+                const response = await fetch('http://localhost:9092/question', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                // 显示API返回的结果（可以跳转到一个结果页面或在当前页面展示）
+                // 判断响应是否成功
+                if (response.ok) {
+                    // 将结果通过URL参数传递到result.html
+                    window.location.href = `result?result=${encodeURIComponent(JSON.stringify(result))}`;
+                } else {
+                    alert("发生错误: " + result.error);
+                }
+            } catch (error) {
+                console.error("请求失败: ", error);
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>健康调查表</h1>
+
+    <form onsubmit="submitForm(event)">
+        <p>
+            <label>性别：</label><br>
+            <input type="radio" id="male" name="gender" value="male" required>
+            <label for="male">男性</label><br>
+            <input type="radio" id="female" name="gender" value="female" required>
+            <label for="female">女性</label>
+        </p>
+
+        <p>
+            <label>是否上过大学：</label><br>
+            <input type="radio" id="college_yes" name="college" value="yes" required>
+            <label for="college_yes">是</label><br>
+            <input type="radio" id="college_no" name="college" value="no" required>
+            <label for="college_no">否</label>
+        </p>
+
+        <p>
+            <label>是否吸烟：</label><br>
+            <input type="radio" id="smoke_yes" name="smoke" value="yes" required>
+            <label for="smoke_yes">是</label><br>
+            <input type="radio" id="smoke_no" name="smoke" value="no">
+            <label for="smoke_no">否</label>
+        </p>
+
+        <p>
+            <label>是否每周喝五次酒：</label><br>
+            <input type="radio" id="drink_yes" name="drink" value="yes" required>
+            <label for="drink_yes">是</label><br>
+            <input type="radio" id="drink_no" name="drink" value="no" required>
+            <label for="drink_no">否</label>
+        </p>
+
+        <p>
+            <label>是否失眠：</label><br>
+            <input type="radio" id="insomnia_yes" name="insomnia" value="yes" required>
+            <label for="insomnia_yes">是</label><br>
+            <input type="radio" id="insomnia_no" name="insomnia" value="no" required>
+            <label for="insomnia_no">否</label>
+        </p>
+
+        <p>
+            <label>是否有阿尔茨海默氏症家族史：</label><br>
+            <input type="radio" id="alz_yes" name="alzheimers" value="yes" required>
+            <label for="alz_yes">是</label><br>
+            <input type="radio" id="alz_no" name="alzheimers" value="no" required>
+            <label for="alz_no">否</label>
+        </p>
+
+        <p>
+            <label>是否存在心脏病：</label><br>
+            <input type="radio" id="heart_yes" name="heart_disease" value="yes" required>
+            <label for="heart_yes">是</label><br>
+            <input type="radio" id="heart_no" name="heart_disease" value="no" required>
+            <label for="heart_no">否</label>
+        </p>
+
+        <p>
+            <label>是否有糖尿病：</label><br>
+            <input type="radio" id="diabetes_yes" name="diabetes" value="yes" required>
+            <label for="diabetes_yes">是</label><br>
+            <input type="radio" id="diabetes_no" name="diabetes" value="no" required>
+            <label for="diabetes_no">否</label>
+        </p>
+
+        <p>
+            <label>是否有抑郁症病史：</label><br>
+            <input type="radio" id="depression_yes" name="depression_history" value="yes" required>
+            <label for="depression_yes">是</label><br>
+            <input type="radio" id="depression_no" name="depression_history" value="no" required>
+            <label for="depression_no">否</label>
+        </p>
+
+        <p>
+            <label>是否有头部外伤史：</label><br>
+            <input type="radio" id="head_injury_yes" name="head_injury" value="yes" required>
+            <label for="head_injury_yes">是</label><br>
+            <input type="radio" id="head_injury_no" name="head_injury" value="no" required>
+            <label for="head_injury_no">否</label>
+        </p>
+
+        <p>
+            <label>是否存在行为问题：</label><br>
+            <input type="radio" id="behavior_yes" name="behavior_problems" value="yes" required>
+            <label for="behavior_yes">是</label><br>
+            <input type="radio" id="behavior_no" name="behavior_problems" value="no" required>
+            <label for="behavior_no">否</label>
+        </p>
+
+        <p>
+            <label>是否存在意识模糊症状：</label><br>
+            <input type="radio" id="confusion_yes" name="confusion" value="yes" required>
+            <label for="confusion_yes">是</label><br>
+            <input type="radio" id="confusion_no" name="confusion" value="no" required>
+            <label for="confusion_no">否</label>
+        </p>
+
+        <p>
+            <label>是否迷失方向：</label><br>
+            <input type="radio" id="disorientation_yes" name="disorientation" value="yes" required>
+            <label for="disorientation_yes">是</label><br>
+            <input type="radio" id="disorientation_no" name="disorientation" value="no" required>
+            <label for="disorientation_no">否</label>
+        </p>
+
+        <p>
+            <label>是否存在定向障碍：</label><br>
+            <input type="radio" id="orientation_yes" name="orientation_issues" value="yes" required>
+            <label for="orientation_yes">是</label><br>
+            <input type="radio" id="orientation_no" name="orientation_issues" value="no" required>
+            <label for="orientation_no">否</label>
+        </p>
+
+        <p>
+            <label>是否性格变化：</label><br>
+            <input type="radio" id="personality_yes" name="personality_change" value="yes" required>
+            <label for="personality_yes">是</label><br>
+            <input type="radio" id="personality_no" name="personality_change" value="no" required>
+            <label for="personality_no">否</label>
+        </p>
+
+        <p>
+            <label>是否难以完成任务：</label><br>
+            <input type="radio" id="task_completion_yes" name="task_completion" value="yes" required>
+            <label for="task_completion_yes">是</label><br>
+            <input type="radio" id="task_completion_no" name="task_completion" value="no" required>
+            <label for="task_completion_no">否</label>
+        </p>
+
+        <button type="submit">提交</button>
+    </form>
+</div>
+</body>
+</html>
